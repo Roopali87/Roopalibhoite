@@ -1,0 +1,34 @@
+##multiple density plots
+# SPAD chlorophyll content index (CCI)
+library(ggplot2)
+head(CCI)
+density(CCI$PCR)
+plot(density(CCI$PCR))
+ggplot(CCI, aes(PCR)) + geom_density() + labs(x = "Percentage chlorophyll reduction", y = "Distribution of data")
+ggplot(CCI, aes(PCR, fill = as.factor(CCI$Year))) + geom_density(alpha = 0.6) + labs(x = "Percentage chlorophyll reduction", y = "Distribution of data") + theme_bw() 
+
+# Senescence
+head(SNS)
+density(SNS$T)
+plot(density(SNS$T))
+ggplot(SNS, aes(T)) + geom_density() + labs(x = "Senescence", y = "Distribution of data")
+ggplot(SNS, aes(T, fill = as.factor(SNS$Year))) + geom_density(alpha = 0.6) + labs(x = "Senescence", y = "Distribution of data") + theme_bw() 
+
+##Histogram and density plots together
+#SPAD CCI
+library(ggplot2)
+installlibrary(scales)
+summary(RC)
+attach(RC)
+qplot(data=RC, aes(RILs, PCR)) + geom_smooth( aes(linetype = year), method = "lm") + geom_point( aes(shape = year))
+Read(RC)
+view(RC)
+summary(RC)
+qplot(RILs, PCR, data = RC3)
+qplot(RILs, PCR, data = RC, color = Year, geom = c("point", "smooth"), method = "lm")
+qplot(RILs, PCR, data = RC3, geom = c("point", "smooth"), method = "lm")
+qplot(RILs, PCR, data = RC, facets = . ~ Year)
+
+attach(N.dist.CCI)
+ggplot(data=N.dist.CCI) + geom_histogram( aes(% Chlorophyll reduction, Frequency)) + geom_density( aes(% Chlorophyll reduction, Frequency)) 
+

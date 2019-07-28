@@ -1,0 +1,29 @@
+## Estimating ANOVA and model fitting (poisson distribution) in F5, F6 and F7 recombinant inbred lines (RILs)
+
+attach(heritability)
+View(heritability)
+fit <- glm(SNS ~ RIL, data = heritability, family = poisson())
+summary(m1 <- glm(SNS ~ RIL, family="poisson", data=heritability))
+poisson.anova(SNS, ina, logged = FALSE)
+fit <- glm(SNS ~ RIL, data = heritability, family = poisson())
+fit=aov(SNS~RIL, data=heritability )
+summary(fit)
+anova(fit)
+poisson.anova(SNS, ina, logged = FALSE)
+summary(m1 <- glm(SNS ~ RIL, family="binomial", data=heritability))
+
+## F6
+attach(heritability1)
+View(heritability1)
+fit <- glm(SNS ~ RIL, data = heritability1, family = poisson())
+summary(m1 <- glm(SNS ~ RIL, family="poisson", data=heritability1))
+fit=aov(SNS~RIL, data=heritability1)
+summary(fit)
+
+## F7
+attach(heritability2)
+View(heritability1=2)
+fit <- glm(SNS ~ RIL, data = heritability2, family = poisson())
+summary(m1 <- glm(SNS ~ RIL, family="poisson", data=heritability2))
+fit=aov(SNS~RIL, data=heritability2 )
+summary(fit)

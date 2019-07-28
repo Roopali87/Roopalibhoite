@@ -1,0 +1,32 @@
+### Multiple plots with aesthetics (Fitting field data)
+install.packages("ggplot2")
+install.packages("ggpubr")
+library(ggpubr)
+library(ggplot2)
+library(ggplot2)
+attach(Field1)
+str(Field1)
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point()
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point(color = "blue")
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point(aes(color = Genotype))
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point(aes(color = Genotype), size = 1)
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point(aes(color = Genotype, size = SNS1)) + theme_bw() + labs(x = "Dose (g ai/ha)", y = "Senescence") 
+
+
+p3 <- ggplot(Field1,
+             aes(x = Dose,
+                 y = SNS1)) + 
+  theme(legend.position="top",
+        axis.text=element_text(size = 6))
+(p4 <- p3 + geom_point(aes(color = Genotype),
+                       alpha = 1,
+                       size = 1.5,
+                       position = position_jitter(width = 0.25, height = 0)))
+
+ggplot(Field1, aes(x = Dose, y = SNS1)) +
+  geom_point(aes(color = Genotype, size = SNS)) + theme_minimal() + labs(x = "Dose (g ai/ha)", y = "Senescence") 

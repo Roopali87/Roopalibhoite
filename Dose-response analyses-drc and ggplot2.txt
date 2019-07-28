@@ -1,0 +1,400 @@
+### Continuous response (drymatter, SPAD) fit LL.4() model 
+### discrete/count/subjective response (senescence) fit LL.3() model
+### Multiple dose-response curves
+
+### drc plot with ggplot
+###Senescence(Tolerant1)- LL.3 model
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Tolerant1)
+df <- Tolerant1
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Senescence, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Senescence, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Senescence ~ Dose, 
+      fct = LL.3(names = c("Slope", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,10000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Senescence, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) +
+  theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+...........................................................................................................................
+### drc plot with ggplot
+### Survival(Tolerant1)- LL.4() model
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Tolerant1)
+df <- Tolerant1
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Survival, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Survival, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Survival ~ Dose, 
+      fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,15000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Survival, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), linetype = 1, data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) + 
+  labs(x= "log(Dose)", y= "% Survival") + theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+............................................................................................................................
+### drc plot with ggplot
+Drymatter(Tolerant1)- LL.4 () model
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Tolerant1)
+df <- Tolerant1
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Drymatter, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Drymatter, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Drymatter ~ Dose, 
+      fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,15000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Drymatter, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), linetype = 1, data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) + 
+  labs(x= "log(Dose)", y= "Biomass (% control)") + theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+............................................................................................................................
+### drc plot with ggplot 
+###Senescence(Susceptible)- LL.3 () model
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Susceptible)
+df <- Susceptible
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Senescence, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Senescence, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Senescence ~ Dose, 
+      fct = LL.3(names = c("Slope", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,10000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Senescence, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) +
+  theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+............................................................................................................................
+### drc plot with ggplot
+###Survival(Susceptible)- LL.4 () model
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Susceptible)
+df <- Susceptible
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Survival, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Survival, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Survival ~ Dose, 
+      fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,15000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Survival, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), linetype = 1, data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) + 
+  labs(x= "log(Dose)", y= "% Survival") + theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+.............................................................................................................................
+### drc plot with ggplot
+### Drymatter(Susceptible)- LL.4 () model 
+install.packages("tidyverse")
+install.packages("broom")
+install.packages("modelr")
+install.packages("egg")
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(broom)
+library(drc)
+library(modelr)
+library(egg) 
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+attach(Susceptible)
+df <- Susceptible
+# view the data in normal and log scale for dose
+p1 <- df %>% ggplot() + geom_point(aes(Dose, Drymatter, color = Genotype)) + theme_bw()
+p2 <- df %>% ggplot() + geom_point(aes(log(Dose), Drymatter, color = Genotype)) + theme_bw()
+ggarrange(p1, p2)
+
+drm.func <- function(x) {
+  drm(Drymatter ~ Dose, 
+      fct = LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), 
+      data = x)
+}
+predict.fun <- function(x) {
+  add_predictions(data.frame(Dose = seq(0,15000)), x)
+}
+library(dplyr)
+coefs.fun <- function(x) {coef(x) %>% tidy}
+df2 <- df %>% group_by(Genotype) %>% nest() %>%
+  mutate(drmod = map(data, drm.func), 
+         pred = map(drmod, predict.fun),
+         coefs = map(drmod, coefs.fun))
+
+#plot raw data, model and ED50 line
+df2 %>% unnest(data) %>% 
+  ggplot() + 
+  geom_point(aes(log(Dose), Drymatter, color = Genotype)) +
+  geom_line(aes(log(Dose), pred, color = Genotype), linetype = 1, data =
+              df2 %>% unnest(pred)) +
+  geom_vline(aes(xintercept = log(x), color = Genotype), 
+             linetype = 2,
+             data = df2 %>% unnest(coefs) %>% filter(names == "ED50:(Intercept)")) + 
+  labs(x= "log(Dose)", y= "Biomass (% control)") + theme_bw()
+df2 %>% unnest(coefs) %>% spread(names, x)
+
+
+### Fitting own data (All tolerant)-fct=LL.4-Drymatter
+head(Tolerant1)
+str(Tolerant1)
+Tolerant1.m1<-drm(Drymatter~Dose, Genotype, fct=LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), data=Tolerant1)
+summary(Tolerant1.m1)
+modelFit(Tolerant1.m1)
+plot(Tolerant1.m1,broken=TRUE,col="red")
+ED(Tolerant1.m1,50,interval="delta")
+ED(Tolerant1.m1,c(10,50,90), interval="delta")
+## pmodels fixes lower and upper limit; c(slope, lowerlimit, upperlimit, ED50) of multiple dose-response curve
+Tolerant1.m2<-drm(Drymatter~Dose, Genotype, fct=LL.4(), data=Tolerant1,
+                  pmodels=data.frame(Genotype,1,1,Genotype))
+summary(Tolerant1.m2)
+SI(Tolerant1.m1, c(50,50))
+SI(Tolerant1.m2, c(50,50),reverse=TRUE)
+plot(Tolerant1.m2,broken=TRUE)
+plot(Tolerant1.m1,broken=TRUE,col="red",lty=c(3,4),add=TRUE)
+relpot(Tolerant1.m2, interval = "delta",col="dark orange")
+library(lattice)
+xyplot(Senescence~log(Dose+.1)|Genotype, data=Tolerant1)
+?xyplot
+xyplot(Senescence~log(Dose+.1)|Genotype, data=Tolerant1)
+install.packages("ggplot2")
+library(ggplot2)
+ggplot(Tolerant1, aes(Senescence)) + geom_density()
+ggplot(Tolerant1, aes(Dose, fill = as.factor(Tolerant1$Senescence))) + geom_density(alpha = 0.6) + labs(x = "Dose", y = "Senescence")
+ggplot(Tolerant1, aes(Dose, fill = as.factor(Tolerant1$Senescence))) + geom_density(alpha = 0.1) + labs(x = "Dose", y = "Senescence") 
+...........................................................................................................................
+### Estimating dose response parameter and confidence interval
+### Fitting all tolerant-fct=LL.4-Survival
+head(Tolerant1)
+str(Tolerant1)
+Tolerant1.m1<-drm(Survival~Dose, Genotype, fct=LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), data=Tolerant1)
+summary(Tolerant1.m1)
+modelFit(Tolerant1.m1)
+plot(Tolerant1.m1,broken=TRUE,col="red")
+ED(Tolerant1.m1,50,interval="delta")
+ED(Tolerant1.m1,c(10,50,90), interval="delta")
+
+### Fitting all tolerant-fct=LL.3-Senescence
+attach(Tolerant1)
+head(Tolerant1)
+str(Tolerant1)
+Tolerant1.m1<-drm(Senescence~Dose, Genotype, fct=LL.3(), data=Tolerant1)
+summary(Tolerant1.m1)
+modelFit(Tolerant1.m1)
+plot(Tolerant1.m1,broken=TRUE,col="red")
+ED(Tolerant1.m1,50,interval="delta")
+ED(Tolerant1.m1,c(10,50,90), interval="delta")
+Tolerant1.m2<-drm(Senescence~Dose, Genotype, fct=LL.3(), data=Tolerant1,
+                  pmodels=data.frame(NA,100,NA))
+summary(Tolerant1.m2)
+SI(Tolerant1.m2, c(50,50))
+SI(Tolerant1.m2, c(50,50),reverse=TRUE)
+plot(Tolerant1.m2,broken=TRUE)
+plot(Tolerant1.m1,broken=TRUE,col="red",lty=c(3,4),add=TRUE)
+relpot(Tolerant1.m2, interval = "delta",col="dark orange")
+
+### Fitting all susceptible-fct=LL.4-Drymatter
+head(Susceptible)
+str(Susceptible)
+Susceptible.m1<-drm(Drymatter~Dose, Genotype, fct=LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), data=Susceptible)
+summary(Susceptible.m1)
+modelFit(Susceptible.m1)
+plot(Susceptible.m1,broken=TRUE,col="red")
+ED(Susceptible.m1,50,interval="delta")
+ED(Susceptible.m1,c(10,50,90), interval="delta")
+
+### Fitting all tolerant-fct=LL.4-Survival
+head(Susceptible)
+str(Susceptible)
+Susceptible.m1<-drm(Survival~Dose, Genotype, fct=LL.4(names = c("Slope", "Lower Limit", "Upper Limit", "ED50")), data=Susceptible)
+summary(Susceptible.m1)
+modelFit(Susceptible.m1)
+plot(Susceptible.m1,broken=TRUE,col="red")
+ED(Susceptible.m1,50,interval="delta")
+ED(Susceptible.m1,c(10,50,90), interval="delta")
+
+### Fitting all tolerant-fct=LL.3-Senescence
+attach(Susceptible)
+head(Susceptible)
+str(Susceptible)
+Tolerant1.m1<-drm(Senescence~Dose, Genotype, fct=LL.3(), data=Susceptible)
+summary(Susceptible.m1)
+modelFit(Susceptible.m1)
+plot(Susceptible.m1,broken=TRUE,col="red")
+ED(Susceptible.m1,50,interval="delta")
+ED(Susceptible.m1,c(10,50,90), interval="delta")
+
