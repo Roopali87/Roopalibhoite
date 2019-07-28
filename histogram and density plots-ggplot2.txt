@@ -32,3 +32,34 @@ qplot(RILs, PCR, data = RC, facets = . ~ Year)
 attach(N.dist.CCI)
 ggplot(data=N.dist.CCI) + geom_histogram( aes(% Chlorophyll reduction, Frequency)) + geom_density( aes(% Chlorophyll reduction, Frequency)) 
 
+.............................................................................................................................
+#Overlay histogram and density plot
+head(CCI2016)
+library(ggplot2)
+ggplot(CCI2016, aes(PCR)) + geom_histogram(color = "white")
+ggplot(data=CCI2016) + geom_histogram(aes(PCR, ..density..)) + geom_density(aes(PCR, ..density..)) + geom_rug(aes(PCR))
+ggplot(data=CCI2016) + geom_histogram(aes(PCR, ..density..), color="blue") + geom_density(aes(PCR, ..density..)) + geom_rug(aes(PCR))
+ggplot(data=CCI2016) + geom_histogram(aes(PCR, ..density..), color="blue") + geom_density(aes(PCR, ..density..)) + geom_rug(aes(PCR))
++ theme_light() 
+
+ggplot(data=CCI2016) + geom_histogram(aes(PCR, ..density..), color="black", fill="grey", alpha=0.3) + geom_density(aes(PCR, ..density..), color="red") + geom_rug(aes(PCR)) + 
+  theme_light() +
+  xlab('Percentage chlorophyll reduction') +
+  ylab('Distribution of data')
+
+#Multiple grid
+attach(CCI)
+ggplot(data=CCI) + geom_histogram(aes(PCR, ..density..), color="black", fill="grey", alpha=0.3) + 
+  geom_density(aes(PCR, ..density..), color="red", adjust=2) + geom_rug(aes(PCR)) + 
+  theme_bw() +
+  xlab('Percentage CCI reduction') +
+  ylab('Distribution of data') +
+  facet_grid(. ~ Year)
+
+attach(SNS)
+ggplot(data=SNS) + geom_histogram(aes(T, ..density..), color="black", fill="grey", alpha=0.3) + 
+  geom_density(aes(T, ..density..), color="red", adjust=2) + geom_rug(aes(T)) + 
+  theme_bw() +
+  xlab('Senescence') +
+  ylab('Distribution of data') +
+  facet_grid(. ~ Year)
