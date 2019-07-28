@@ -1,0 +1,48 @@
+###Principal component analysis (PCA)
+###Fulldata-More than 10000 SNPs after eliminating single cluster data
+
+library(ade4)
+library(ggplot2)
+library(factoextra)
+library(magrittr)
+library(factoextra)
+attach(Fulldata.matrix11)
+Fulldata.matrix11 <- Fulldata.matrix11[, -1]
+rownames(Fulldata.matrix11) <- Fulldata.matrix11[, 1]
+princ <- prcomp(Fulldata.matrix11)
+pca <- prcomp(t(Fulldata.matrix11), scale=TRUE) 
+plot(pca$x[,1], pca$x[,2])fa
+pca.var <- pca$sdev^2
+pca.var.per <- round(pca.var/sum(pca.var)*100, 1)
+barplot(pca.var.per, main="Scree Plot", xlab="Principal Component", ylab="Percent Variation")
+res.pca <- dudi.pca(Fulldata.matrix11,
+                    scannf = FALSE,   # Hide scree plot
+                    nf = 5            # Number of components kept in the results)
+
+##Visualize PCA results
+fviz_eig(res.pca)
+
+##Graph of individuals. Individuals with a similar profile are grouped together.
+fviz_pca_ind(res.pca,  pointshape = 21,
+             col.ind = "cos2", # Color by the quality of representation
+              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), pointsize = 4, 
+             repel = TRUE# Avoid text overlapping)
+fviz_pca_ind(res.pca, col.ind = "cos2", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), pointsize = 4, xlab = "PC1 (28%)", ylab = "PC2 (22.7%)", font.lab = 5,
+             repel = TRUE # Avoid text overlapping)
+
+#Graph of individuals. Individuals with a similar profile are grouped together.
+fviz_pca_ind(res.pca, pointsize = "cos2",  pointshape = 21,
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), col.ind = bs.matrix1$Genotype, 
+             repel = TRUE# Avoid text overlapping)
+
+### get the name of the top 10 measurements (genes) that contribute
+## most to pc1.
+loading_scores <- pca$rotation
+gene_scores <- abs(loading_scores) ## get the magnitudes
+gene_score_ranked <- sort(gene_scores, decreasing=TRUE)
+top_10_genes <- names(gene_score_ranked[1:10])
+top_10_genes ## show the names of the top 10 genes
+pca$rotation[top_10_genes,1] ## show the scores (and +/- sign)
+             
